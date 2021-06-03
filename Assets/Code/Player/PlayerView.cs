@@ -16,7 +16,10 @@ namespace Asteroids2
         private const float turnLeft = -1.0f;
 
         private float timeSinceLastFire = 0;
-        private const float minTimeBetweenFire = 1;
+        private float bulletOffsetScaleFactor;
+
+        private const float minTimeBetweenFire = 0.5f;
+        private const float placeBulletALittleFurther = 1.5f;
 
         public void Init(IPlayerViewModel _playerViewModel)
         {
@@ -26,6 +29,8 @@ namespace Asteroids2
             playerViewModel.PlayerRotated += RotatePlayer;
 
             playerRigidbody2D = GetComponent<Rigidbody2D>();
+
+            bulletOffsetScaleFactor = GetComponent<PolygonCollider2D>().bounds.extents.y*placeBulletALittleFurther;
         }
 
         public void RotatePlayer(float torque)
@@ -41,7 +46,7 @@ namespace Asteroids2
                 playerViewModel.RotateShip(turnLeft, frameTime);
             if(Input.GetKeyDown(playerModel.FireKey) && (timeSinceLastFire >= minTimeBetweenFire))
             {
-                playerViewModel.Fire(gameObject.transform.position, gameObject.transform.up);
+                playerViewModel.Fire(gameObject.transform.position + gameObject.transform.up*bulletOffsetScaleFactor, gameObject.transform.up);
                 timeSinceLastFire = 0;
             }
             else

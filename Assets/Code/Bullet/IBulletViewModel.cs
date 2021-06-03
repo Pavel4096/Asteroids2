@@ -9,9 +9,11 @@ namespace Asteroids2
 
         event Action<Vector3> BulletMoved;
         event Action TimeElapsed;
+        event Action Destroyed;
         event Action<Vector3> Reinitialized;
 
-        void Reinitialize(Vector3 position, Vector3 direction);
+        void Reinitialize(Vector3 position, Vector3 direction, IScoreReceiver scoreReceiver);
         void UpdateFrame(float frameTime);
+        void Damage(int id);
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Asteroids2
 {
-    internal interface IPlayerViewModel
+    internal interface IPlayerViewModel : IScoreReceiver
     {
         IPlayerModel Model { get; }
 

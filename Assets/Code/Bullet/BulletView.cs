@@ -19,6 +19,7 @@ namespace Asteroids2
             colliders = new List<Collider2D>(2);
             bulletViewModel.BulletMoved += MoveBullet;
             bulletViewModel.TimeElapsed += Destruct;
+            bulletViewModel.Destroyed += Destruct;
             bulletViewModel.Reinitialized += Show;
         }
 
@@ -55,7 +56,7 @@ namespace Asteroids2
                 var count = bulletCollider.OverlapCollider(filter.NoFilter(), colliders);
                 if(count > 0)
                 {
-                    
+                    bulletViewModel.Damage(colliders[0].GetInstanceID());
                 }
             }
         }
@@ -65,6 +66,7 @@ namespace Asteroids2
             game.GameLoop -= GameUpdate;
             bulletViewModel.BulletMoved -= MoveBullet;
             bulletViewModel.TimeElapsed -= Destruct;
+            bulletViewModel.Destroyed -= Destruct;
             bulletViewModel.Reinitialized -= Show;
         }
     }

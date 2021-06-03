@@ -5,7 +5,7 @@ namespace Asteroids2
     internal sealed class BulletModel : IBulletModel
     {
         public float Speed { get; }
-        public float MaxTime { get; set; }
+        public float MaxTime { get; }
 
         public BulletModel(float _speed, float _maxTime)
         {

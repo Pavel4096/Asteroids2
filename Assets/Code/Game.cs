@@ -7,22 +7,31 @@ namespace Asteroids2
 {
     internal sealed class Game : MonoBehaviour, IGame
     {
-        [SerializeField] PlayerView playerView;
-
         public event Action<float> GameLoop;
+
+        [SerializeField] private PlayerView playerView;
+        [SerializeField] private ScoreView scoreView;
+        private AsteroidFactory asteroidFactory;
+        private IDamageManager damageManager;
 
         void Start()
         {
+            damageManager = new DamageManager();
             IPlayerModel playerModel = new PlayerModel(KeyCode.A, KeyCode.D, KeyCode.Space, 2.5f);
-            IPlayerViewModel playerViewModel = new PlayerViewModel(playerModel, new BulletFactory(this));
+            IPlayerViewModel playerViewModel = new PlayerViewModel(playerModel, new BulletFactory(this, damageManager));
             playerView.Init(playerViewModel);
+            scoreView.Init(playerViewModel);
 
             GameLoop += delegate(float frameTime) { };
             GameLoop += playerView.GameUpdate;
+
+            asteroidFactory = new AsteroidFactory(this, damageManager);
         }
 
         void Update()
         {
+            if((Time.frameCount % 250) == 0)
+                asteroidFactory.GetAsteroid();
             GameLoop.Invoke(Time.deltaTime);
         }
     }

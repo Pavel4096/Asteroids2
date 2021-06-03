@@ -5,8 +5,6 @@ namespace Asteroids2
 {
     internal sealed class BulletViewModel : IBulletViewModel, IPoolable
     {
-        IBulletModel model;
-
         public IBulletModel Model
         {
             get => model;
@@ -16,23 +14,30 @@ namespace Asteroids2
 
         public event Action<Vector3> BulletMoved;
         public event Action TimeElapsed;
+        public event Action Destroyed;
         public event Action<Vector3> Reinitialized;
 
+        private IBulletModel model;
         private Vector3 direction;
         private float elapsedTime;
+        private IDamageManager damageManager;
+        private IScoreReceiver scoreReceiver;
 
-        public BulletViewModel(IBulletModel _model)
+        public BulletViewModel(IBulletModel _model, IDamageManager _damageManager)
         {
             model = _model;
-            isFree = true;
+            damageManager = _damageManager;
+            isFree = false;
             BulletMoved += delegate(Vector3 distance) { };
             TimeElapsed += delegate() { };
+            Destroyed += delegate() { };
             Reinitialized += delegate(Vector3 newPosition) { };
         }
 
-        public void Reinitialize(Vector3 newPosition, Vector3 newDirection)
+        public void Reinitialize(Vector3 newPosition, Vector3 newDirection, IScoreReceiver newScoreReceiver)
         {
             direction = newDirection;
+            scoreReceiver = newScoreReceiver;
             elapsedTime = 0.0f;
             Reinitialized.Invoke(newPosition);
         }
@@ -43,6 +48,12 @@ namespace Asteroids2
             elapsedTime += frameTime;
             if(elapsedTime >= model.MaxTime)
                 TimeElapsed.Invoke();
+        }
+
+        public void Damage(int id)
+        {
+            damageManager.Damage(id, scoreReceiver, 1250);
+            Destroyed.Invoke();
         }
     }
 }

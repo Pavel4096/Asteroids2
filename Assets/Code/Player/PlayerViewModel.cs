@@ -32,10 +32,10 @@ namespace Asteroids2
 
         public void Fire(Vector3 position, Vector3 direction)
         {
-            bulletFactory.GetBullet(position, direction);
+            bulletFactory.GetBullet(position, direction, this);
         }
 
-        public void ScoreAdded(int additionalScore)
+        public void AddScore(int additionalScore)
         {
             playerModel.AddScore(additionalScore);
             ScoreChanged.Invoke(playerModel.Score);
