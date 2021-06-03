@@ -4,8 +4,6 @@ namespace Asteroids2
 {
     internal sealed class PlayerModel : IPlayerModel
     {
-        private int score;
-
         public int Score
         {
             get => score;
@@ -15,6 +13,8 @@ namespace Asteroids2
         public KeyCode RotateLeftKey { get; set; }
         public KeyCode FireKey { get; set; }
         public float Torque { get; private set; }
+
+        private int score;
 
         public PlayerModel(KeyCode _rotateRightKey, KeyCode _rotateLeftKey, KeyCode _fireKey, float _torque)
         {

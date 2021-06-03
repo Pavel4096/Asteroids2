@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Asteroids2
 {
-    internal sealed class Game : MonoBehaviour
+    internal sealed class Game : MonoBehaviour, IGame
     {
         [SerializeField] PlayerView playerView;
 
@@ -14,7 +14,7 @@ namespace Asteroids2
         void Start()
         {
             IPlayerModel playerModel = new PlayerModel(KeyCode.A, KeyCode.D, KeyCode.Space, 2.5f);
-            IPlayerViewModel playerViewModel = new PlayerViewModel(playerModel);
+            IPlayerViewModel playerViewModel = new PlayerViewModel(playerModel, new BulletFactory(this));
             playerView.Init(playerViewModel);
 
             GameLoop += delegate(float frameTime) { };

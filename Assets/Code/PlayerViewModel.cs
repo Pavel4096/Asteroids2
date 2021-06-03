@@ -7,29 +7,38 @@ namespace Asteroids2
     {
         public IPlayerModel playerModel;
 
-        public Rigidbody2D Rigidbody { get; set; }
-
-        public PlayerViewModel(IPlayerModel _playerModel)
-        {
-            playerModel = _playerModel;
-            ScoreChanged += delegate(int newScore) { };
-        }
-
         public IPlayerModel Model
         {
             get => playerModel;
         }
 
         public event Action<int> ScoreChanged;
+        public event Action<float> PlayerRotated;
+
+        private IBulletFactory bulletFactory;
+
+        public PlayerViewModel(IPlayerModel _playerModel, IBulletFactory _bulletFactory)
+        {
+            playerModel = _playerModel;
+            bulletFactory = _bulletFactory;
+            ScoreChanged += delegate(int newScore) { };
+            PlayerRotated += delegate(float value) { };
+        }
 
         public void RotateShip(float direction, float frameTime)
         {
-            Rigidbody.AddTorque(playerModel.Torque*frameTime*direction);
+            PlayerRotated.Invoke(playerModel.Torque*frameTime*direction);
         }
 
-        public void Fire()
+        public void Fire(Vector3 position, Vector3 direction)
         {
+            bulletFactory.GetBullet(position, direction);
+        }
 
+        public void ScoreAdded(int additionalScore)
+        {
+            playerModel.AddScore(additionalScore);
+            ScoreChanged.Invoke(playerModel.Score);
         }
     }
 }

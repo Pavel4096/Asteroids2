@@ -6,11 +6,11 @@ namespace Asteroids2
     internal interface IPlayerViewModel
     {
         IPlayerModel Model { get; }
-        Rigidbody2D Rigidbody { get; set; }
 
         event Action<int> ScoreChanged;
+        event Action<float> PlayerRotated;
 
         void RotateShip(float direction, float frameTime);
-        void Fire();
+        void Fire(Vector3 position, Vector3 direction);
     }
 }

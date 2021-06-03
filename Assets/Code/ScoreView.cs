@@ -21,6 +21,11 @@ namespace Asteroids2
         {
             scoreText.text = newScore.ToString();
         }
+
+        ~ScoreView()
+        {
+            playerViewModel.ScoreChanged -= UpdateScore;
+        }
     }
 
 }
