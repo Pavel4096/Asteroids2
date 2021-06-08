@@ -12,16 +12,16 @@ namespace Asteroids2
 
         private Rigidbody2D playerRigidbody2D;
 
-        private const float turnRight = 1.0f;
-        private const float turnLeft = -1.0f;
+        private const float turnLeft = 1.0f;
+        private const float turnRight = -1.0f;
 
-        private float timeSinceLastFire = 0;
+        private float lastFireTime = 0;
         private float bulletOffsetScaleFactor;
 
         private const float minTimeBetweenFire = 0.5f;
         private const float placeBulletALittleFurther = 1.5f;
 
-        public void Init(IPlayerViewModel _playerViewModel)
+        public void Init(IPlayerViewModel _playerViewModel, IInputController inputController)
         {
             playerViewModel = _playerViewModel;
             playerModel = playerViewModel.Model;
@@ -31,6 +31,10 @@ namespace Asteroids2
             playerRigidbody2D = GetComponent<Rigidbody2D>();
 
             bulletOffsetScaleFactor = GetComponent<PolygonCollider2D>().bounds.extents.y*placeBulletALittleFurther;
+
+            inputController.RegisterKey("TurnLeft", InputType.Holded, RotateLeft);
+            inputController.RegisterKey("TurnRight", InputType.Holded, RotateRight);
+            inputController.RegisterKey("Fire", InputType.Pressed, Fire);
         }
 
         public void RotatePlayer(float torque)
@@ -40,17 +44,25 @@ namespace Asteroids2
 
         public void GameUpdate(float frameTime)
         {
-            if(Input.GetKey(playerModel.RotateRightKey))
-                playerViewModel.RotateShip(turnRight, frameTime);
-            else if(Input.GetKey(playerModel.RotateLeftKey))
-                playerViewModel.RotateShip(turnLeft, frameTime);
-            if(Input.GetKeyDown(playerModel.FireKey) && (timeSinceLastFire >= minTimeBetweenFire))
+        }
+
+        public void RotateLeft()
+        {
+            playerViewModel.RotateShip(turnLeft, Time.deltaTime);
+        }
+
+        public void RotateRight()
+        {
+            playerViewModel.RotateShip(turnRight, Time.deltaTime);
+        }
+
+        public void Fire()
+        {
+            if( (Time.time - lastFireTime) >= minTimeBetweenFire )
             {
                 playerViewModel.Fire(gameObject.transform.position + gameObject.transform.up*bulletOffsetScaleFactor, gameObject.transform.up);
-                timeSinceLastFire = 0;
+                lastFireTime = Time.time;
             }
-            else
-                timeSinceLastFire += frameTime;
         }
 
         ~PlayerView()
